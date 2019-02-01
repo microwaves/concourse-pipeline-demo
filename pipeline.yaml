@@ -10,18 +10,18 @@ resources:
 - name: git
   type: git
   source:
-    uri: https://github.com/microwaves/go-demoapp
-    branch: master
+    uri: {{git-uri}}
+    branch: {{git-branch}}
 
 - name: version
   type: semver
   source:
     driver: git
-    uri: git@github.com:microwaves/go-demoapp.git
-    branch: version
+    uri: {{semver-uri}}
+    branch: {{semver-branch}}
     private_key: {{github-concourse-private-key}}
-    file: version
-    initial_version: 0.1.0
+    file: {{semver-file}}
+    initial_version: {{semver-initial_version}}
 
 - name: docker
   type: docker-image
