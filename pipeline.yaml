@@ -26,9 +26,9 @@ resources:
 - name: docker
   type: docker-image
   source:
-    repository: microwaves/go-demoapp
-    username: microwaves
-    password: {{dockerhub-microwaves-passwd}}
+    repository: {{dockerhub-repository}}
+    username: {{dockerhub-username}}
+    password: {{dockerhub-password}}
 
 jobs:
 - name: test
