@@ -1,0 +1,78 @@
+groups:
+- name: go-demoapp
+  jobs:
+  - test
+  - minor
+  - major
+  - build
+
+resources:
+- name: git
+  type: git
+  source:
+    uri: https://github.com/microwaves/go-demoapp
+    branch: master
+
+- name: version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:microwaves/go-demoapp.git
+    branch: version
+    private_key: {{github-concourse-private-key}}
+    file: version
+    initial_version: 0.1.0
+
+- name: docker
+  type: docker-image
+  source:
+    repository: microwaves/go-demoapp
+    username: microwaves
+    password: {{dockerhub-microwaves-passwd}}
+
+jobs:
+- name: test
+  serial: true
+  public: false
+  plan:
+  - get: git
+    trigger: true
+  - task: run the test suite
+    file: git/ci/tasks/run_tests.yaml
+
+- name: minor
+  public: false
+  plan:
+  - get: version
+    trigger: false
+    params: {bump: minor}
+  - put: version
+    params: {file: version/version}
+
+- name: major
+  public: false
+  plan:
+  - get: version
+    trigger: false
+    params: {bump: major}
+  - put: version
+    params: {file: version/version}
+
+- name: build
+  serial: true
+  public: false
+  plan:
+  - aggregate:
+    - get: version
+    - get: git
+      trigger: true
+      passed: [test]
+
+  - put: version
+    params:
+      bump: patch
+
+  - put: docker
+    params:
+      build: git
+      additional_tags: version/version
