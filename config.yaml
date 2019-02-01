@@ -1,0 +1,9 @@
+# Git config
+git-uri: https://github.com/microwaves/go-demoapp
+git-branch: master
+
+# Semver config
+semver-uri: git@github.com:microwaves/go-demoapp.git
+semver-branch: version
+semver-file: version
+semver-initial_version: 0.1.0
